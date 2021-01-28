@@ -15,8 +15,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/","/**").access(("permitAll"))
                 .and()
                 .authorizeRequests()
-                .antMatchers( "/console/**").permitAll()
+                .antMatchers(
+                        "/console/**"
+                ).permitAll()
                 .anyRequest().authenticated()
+                .and()
+                .csrf()
+                .ignoringAntMatchers("/console/**")
+                .and()
+                .headers()
+                .frameOptions().sameOrigin()
+                .addHeaderWriter(
+                        new XFrameOptionsHeaderWriter(
+                                new WhiteListedAllowFromStrategy(Arrays.asList("localhost"))
+                        )
+                )
                 .and()
                 .httpBasic();
     }
